@@ -17,7 +17,8 @@ Small CLI tool to extract dominant color palettes from images.
 mkdir build
 cd build
 cmake ..
-make```
+make
+```
 
 ## Usage
 ```bash
