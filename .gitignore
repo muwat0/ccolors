@@ -1,0 +1,17 @@
+# Build directories
+build/
+cmake-build-*/
+
+# CMake files
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+
+# Binaries
+main
+ccolors
+ccolor.exe
+
+# JSON output
+palette.json
