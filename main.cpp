@@ -5,6 +5,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <vector>
+#include <unordered_map>
+#include <algorithm>
 
 using std::cout;
 namespace fs = std::filesystem;
@@ -14,6 +16,13 @@ bool is_png(const unsigned char* buf);
 
 struct Pixel {
     unsigned char r, g, b;
+};
+
+struct Bucket {
+    long r = 0;
+    long g = 0;
+    long b = 0;
+    int count = 0;
 };
 
 int main(int argc, char *argv[]) {
@@ -92,6 +101,44 @@ int main(int argc, char *argv[]) {
     }
 
     cout << "Sampled pixels: " << samples.size() << "\n";
+
+    std::unordered_map<int, Bucket> hist;
+
+    for (auto& p : samples) {
+        int rq = p.r / 16;
+        int gq = p.g / 16;
+        int bq = p.b / 16;
+
+        int key = (rq << 8) | (gq << 4) | bq;
+
+        auto& bucket = hist[key];
+        bucket.r += p.r;
+        bucket.g += p.g;
+        bucket.b += p.b;
+        bucket.count ++;
+    }
+
+    std::vector<Bucket> buckets;
+
+    for (auto& kv : hist) {
+        buckets.push_back(kv.second);
+    }
+
+    std::sort(buckets.begin(), buckets.end(),
+            [](const Bucket& a, const Bucket& b) {
+                return a.count > b.count;
+            });
+
+    int paletteSize = std::min(5, (int)buckets.size());
+
+    for (int i = 0; i < paletteSize; i++) {
+        auto& b = buckets[i];
+        int r = b.r / b.count;
+        int g = b.g / b.count;
+        int bcol = b.b / b.count;
+
+        printf("#%02X%02X%02X\n", r, g, bcol);
+    }
 
     stbi_image_free(data);
 
