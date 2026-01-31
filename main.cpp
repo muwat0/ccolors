@@ -105,6 +105,9 @@ int main(int argc, char *argv[]) {
     std::unordered_map<int, Bucket> hist;
 
     for (auto& p : samples) {
+        int brightness = p.r + p.g + p.b;
+        if (brightness < 60) continue;           //filtering out dark pixels
+
         int rq = p.r / 16;
         int gq = p.g / 16;
         int bq = p.b / 16;
