@@ -7,6 +7,7 @@
 #include <vector>
 #include <unordered_map>
 #include <algorithm>
+#include <cstdio>
 
 using std::cout;
 namespace fs = std::filesystem;
@@ -145,7 +146,9 @@ int main(int argc, char *argv[]) {
         int g = b.g / b.count;
         int bcol = b.b / b.count;
 
-        printf("#%02X%02X%02X\n", r, g, bcol);
+        printf("\033[48;2;%d;%d;%dm  \033[0m #%02X%02X%02X\n",
+        r, g, bcol,
+        r, g, bcol);
     }
 
     stbi_image_free(data);
