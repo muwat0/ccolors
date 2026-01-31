@@ -2,6 +2,8 @@
 #include <string>
 #include <filesystem>
 #include <fstream>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 using std::cout;
 namespace fs = std::filesystem;
@@ -46,7 +48,30 @@ int main(int argc, char *argv[]) {
         cout << "JPEG detected\n";
     } else {
         cout << "Unkown format!\n";
+        return 1;
     }
+
+    int width, height, channels;
+
+    unsigned char* data = stbi_load(
+        argv[1],
+        &width,
+        &height,
+        &channels,
+        3 //forcing to RGB
+        );
+
+    if (!data) {
+        cout << "Failed to load image\n";
+        return 1;
+    }
+
+    cout << "Loaded image:\n";
+    cout << "Width: " << width << "\n";
+    cout << "Height: " << height << "\n";
+    cout << "Channels: " << channels << "\n";
+
+    stbi_image_free(data);
 
     return 0;
 }
