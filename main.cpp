@@ -1,8 +1,13 @@
 #include <iostream>
 #include <string>
 #include <filesystem>
+#include <fstream>
+
 using std::cout;
 namespace fs = std::filesystem;
+
+bool is_jpeg(const unsigned char* buf);
+bool is_png(const unsigned char* buf);
 
 int main(int argc, char *argv[]) {
     for (int i = 0; i <= argc - 1; i++) {
@@ -15,16 +20,48 @@ int main(int argc, char *argv[]) {
 
     if (argc != 2) {
         cout << "Please specify image file. " << argv[0] << " imagefile.jpg";
-    } else {
-        std::string imagefile = argv[1];
-        cout << "File: " << imagefile << "\n";
+        return 1;
+    }
 
-        if (!fs::is_regular_file(imagefile)) {
-            std::cout << "File not found: " << imagefile << "\n";
-            return 1;
-        }
+    std::string imagefile = argv[1];
+    cout << "File: " << imagefile << "\n";
+
+    if (!fs::is_regular_file(imagefile)) {
+        std::cout << "File not found: " << imagefile << "\n";
+        return 1;
+    }
+
+    std::ifstream file(imagefile, std::ios::binary);
+    if (!file) {
+        cout << "Cannot open file!\n";
+        return 1;
+    }
+
+    unsigned char header[8];
+    file.read(reinterpret_cast<char*>(header), 8);
+
+    if (is_png(header)) {
+        cout << "PNG detected\n";
+    } else if (is_jpeg(header)) {
+        cout << "JPEG detected\n";
+    } else {
+        cout << "Unkown format!\n";
     }
 
     return 0;
 }
 
+bool is_jpeg(const unsigned char* buf) {
+    return buf[0] == 0xFF && buf[1] == 0xD8 && buf[2] == 0xFF;
+}
+
+bool is_png(const unsigned char* buf) {
+    return buf[0] == 0x89 &&
+           buf[1] == 0x50 &&
+           buf[2] == 0x4E &&
+           buf[3] == 0x47 &&
+           buf[4] == 0x0D &&
+           buf[5] == 0x0A &&
+           buf[6] == 0x1A &&
+           buf[7] == 0x0A;
+}
