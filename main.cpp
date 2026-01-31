@@ -108,6 +108,11 @@ int main(int argc, char *argv[]) {
         int brightness = p.r + p.g + p.b;
         if (brightness < 60) continue;           //filtering out dark pixels
 
+        int minc = std::min({p.r, p.g, p.b});
+        int maxc = std::max({p.r, p.g, p.b});
+        if (maxc - minc < 10) continue;         //filtering out low saturation
+                                                //(gray) colors
+
         int rq = p.r / 16;
         int gq = p.g / 16;
         int bq = p.b / 16;
