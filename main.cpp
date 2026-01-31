@@ -140,6 +140,12 @@ int main(int argc, char *argv[]) {
 
     int paletteSize = std::min(5, (int)buckets.size());
 
+    std::ofstream json("palette.json");
+
+    json << "{\n";
+    json << "   \"image\": \"" << argv[1] << "\",\n";
+    json << "   \"palette\": [\n";
+
     for (int i = 0; i < paletteSize; i++) {
         auto& b = buckets[i];
         int r = b.r / b.count;
@@ -149,7 +155,26 @@ int main(int argc, char *argv[]) {
         printf("\033[48;2;%d;%d;%dm  \033[0m #%02X%02X%02X\n",
         r, g, bcol,
         r, g, bcol);
+
+        json << "   { "
+             << "\"r\": " << r << ", "
+             << "\"g\": " << g << ", "
+             << "\"b\": " << bcol << ", "
+             << "\"hex\": \"";
+
+        char hexbuf[16];
+        sprintf(hexbuf, "#%02X%02X%02X", r, g, bcol);
+
+        json << hexbuf << "\" }";
+
+        if (i != paletteSize - 1) json << ",";
+
+        json << "\n";
     }
+
+    json << "   ]\n";
+    json << "}\n";
+    json.close();
 
     stbi_image_free(data);
 
