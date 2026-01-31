@@ -4,12 +4,17 @@
 #include <fstream>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include <vector>
 
 using std::cout;
 namespace fs = std::filesystem;
 
 bool is_jpeg(const unsigned char* buf);
 bool is_png(const unsigned char* buf);
+
+struct Pixel {
+    unsigned char r, g, b;
+};
 
 int main(int argc, char *argv[]) {
     for (int i = 0; i <= argc - 1; i++) {
@@ -70,6 +75,23 @@ int main(int argc, char *argv[]) {
     cout << "Width: " << width << "\n";
     cout << "Height: " << height << "\n";
     cout << "Channels: " << channels << "\n";
+
+    std::vector<Pixel> samples;
+
+    int step = 10;          //downsample rate
+    for (int y = 0; y< height; y += step) {
+        for (int x = 0; x < width; x+= step) {
+            int idx = (y * width + x) * 3;
+
+            Pixel p;
+            p.r = data[idx];
+            p.g = data[idx + 1];
+            p.b = data[idx + 2];
+            samples.push_back(p);
+        }
+    }
+
+    cout << "Sampled pixels: " << samples.size() << "\n";
 
     stbi_image_free(data);
 
