@@ -41,7 +41,6 @@ int main(int argc, char *argv[]) {
     }
 
     std::string imagefile = argv[1];
-    cout << "File: " << imagefile << "\n";
 
     if (!fs::is_regular_file(imagefile)) {
         std::cout << "File not found: " << imagefile << "\n";
@@ -58,11 +57,11 @@ int main(int argc, char *argv[]) {
     file.read(reinterpret_cast<char*>(header), 8);
 
     if (is_png(header)) {
-        cout << "PNG detected\n";
+        cout << "PNG file detected!\n";
     } else if (is_jpeg(header)) {
-        cout << "JPEG detected\n";
+        cout << "JPEG file detected!\n";
     } else {
-        cout << "Unkown format!\n";
+        cout << "Unkown image file format!\n";
         return 1;
     }
 
@@ -77,14 +76,17 @@ int main(int argc, char *argv[]) {
         );
 
     if (!data) {
-        cout << "Failed to load image\n";
+        cout << "Failed to load image!\n";
         return 1;
     }
 
+
+    cout << "**********\n";
     cout << "Loaded image:\n";
     cout << "Width: " << width << "\n";
     cout << "Height: " << height << "\n";
     cout << "Channels: " << channels << "\n";
+    cout << "**********\n";
 
     std::vector<Pixel> samples;
 
