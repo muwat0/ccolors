@@ -30,13 +30,22 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i <= argc - 1; i++) {
         std::string arg = argv[i];
         if (arg == "--help" || arg == "-h") {
-            cout << "help flag detected!";
+            cout << 
+                "ccolors - extract color palette from images\n\n"
+                "Usage:\n"
+                "  " << argv[0] << " <image>\n\n"
+                "Options:\n"
+                "  -h, --help     Show this help page\n\n"
+                "Output:\n"
+                "  Prints dominant colors as HEX and terminal swatches\n"
+                "  Also writes palette.json\n";
             return 0;
         }
     }
 
     if (argc != 2) {
-        cout << "Please specify image file. " << argv[0] << " imagefile.jpg";
+        cout << "Please specify a image file. " << argv[0] << " imagefile.jpg"
+             << "\nTry \"" << argv[0] << " --help\" for more information.";
         return 1;
     }
 
